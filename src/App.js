@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from './Table';
 import SubscriptionMRR from './SubscriptionMRR';
+import Slider from './Slider';
 import './App.css';
 
 const data =
@@ -20,12 +21,24 @@ const data =
 
 
 const App = () => {
+  const [maxMRR, setMaxMRR] = useState(0);
   const [totalMRR, setMRR] = useState(0);
+  const [selectedContracts, setSelectedContracts] = useState([]);
+
+  useEffect(() => {
+      const total = data.reduce((acc, val) => (val.mrr + acc), 0);
+      setMaxMRR(total);
+  });
 
   return (
     <div className="App">
       <SubscriptionMRR mrrTotal={totalMRR} />
-      <Table data={data} updateMRR={setMRR} />
+      <br/>
+      <Slider
+        candidateContracts={data}
+        max={maxMRR}
+        totalMRR={totalMRR} updateMRR={setMRR} contracts={selectedContracts} updateContracts={setSelectedContracts} />
+      <Table data={data} contracts={selectedContracts} updateMRR={setMRR} selectContract={setSelectedContracts} />
     </div>
   );
 };
